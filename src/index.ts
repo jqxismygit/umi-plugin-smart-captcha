@@ -5,6 +5,7 @@ interface CaptchaParam {
   guideUrl?: string;
   smartCaptchaUrl?: string;
   quizCaptchaUrl?: string;
+  enableWindowProxy?: boolean;
 }
 //暂时不提供多余的参数配置入口吧，需要的时候直接改这个组件，以后如果有需求再变更吧
 export default function(api: IApi) {
@@ -24,6 +25,7 @@ export default function(api: IApi) {
           guideUrl: joi.string(),
           smartCaptchaUrl: joi.string(),
           quizCaptchaUrl: joi.string(),
+          enableWindowProxy: joi.boolean(),
         });
       },
     },
@@ -34,8 +36,19 @@ export default function(api: IApi) {
     guideUrl = '//g.alicdn.com/sd/nvc/1.1.112/guide.js',
     smartCaptchaUrl = '//g.alicdn.com/sd/smartCaptcha/0.0.4/index.js',
     quizCaptchaUrl = '//g.alicdn.com/sd/quizCaptcha/0.0.1/index.js',
+    enableWindowProxy = false,
   } = captcha;
   console.log('captcha = ', captcha);
+
+  if (enableWindowProxy) {
+    api.addHTMLHeadScripts(() => {
+      return [
+        {
+          content: `window = window.parent || window.top || window`,
+        },
+      ];
+    });
+  }
 
   api.addHTMLHeadScripts(() => {
     return [
