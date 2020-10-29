@@ -40,7 +40,7 @@ export default function(api: IApi) {
   } = captcha;
   console.log('captcha = ', captcha);
 
-  if (enableWindowProxy) {
+  if (!enableWindowProxy) {
     api.addHTMLHeadScripts(() => {
       return [
         {
