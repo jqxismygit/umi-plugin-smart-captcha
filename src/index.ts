@@ -58,11 +58,6 @@ export default function(api: IApi) {
       },
     ];
   });
-
-  api.modifyHTML($ => {
-    $('body').prepend(`<h1>hello umi plugin</h1>`);
-    return $;
-  });
 }
 
 export { default as SmartCaptcha } from './smart-captcha';

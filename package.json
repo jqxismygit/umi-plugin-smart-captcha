@@ -1,7 +1,7 @@
 {
   "name": "umi-plugin-smart-captcha",
   "main": "lib/index.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "smart-captcha",
   "authors": {
     "name": "king",
