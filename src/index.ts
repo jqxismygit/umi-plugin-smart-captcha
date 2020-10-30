@@ -5,8 +5,9 @@ interface CaptchaParam {
   guideUrl?: string;
   smartCaptchaUrl?: string;
   quizCaptchaUrl?: string;
-  enableWindowProxy?: boolean;
+  include?: string;
 }
+
 //暂时不提供多余的参数配置入口吧，需要的时候直接改这个组件，以后如果有需求再变更吧
 export default function(api: IApi) {
   api.logger.info('use smart-captcha plugin');
@@ -25,7 +26,7 @@ export default function(api: IApi) {
           guideUrl: joi.string(),
           smartCaptchaUrl: joi.string(),
           quizCaptchaUrl: joi.string(),
-          enableWindowProxy: joi.boolean(),
+          include: joi.string(),
         });
       },
     },
@@ -36,27 +37,25 @@ export default function(api: IApi) {
     guideUrl = '//g.alicdn.com/sd/nvc/1.1.112/guide.js',
     smartCaptchaUrl = '//g.alicdn.com/sd/smartCaptcha/0.0.4/index.js',
     quizCaptchaUrl = '//g.alicdn.com/sd/quizCaptcha/0.0.1/index.js',
-    enableWindowProxy = false,
+    include = /^(\/user\/login)/,
   } = captcha;
-  console.log('captcha = ', captcha);
-
-  if (!enableWindowProxy) {
-    api.addHTMLHeadScripts(() => {
-      return [
-        {
-          content: `window = window.parent || window.top || window`,
-        },
-      ];
-    });
-  }
 
   api.addHTMLHeadScripts(() => {
     return [
       {
-        src: smartCaptchaUrl,
-      },
-      {
-        src: quizCaptchaUrl,
+        content: `
+          if(${include}.test(window.location.pathname)){
+            console.log(123);
+            function addScript(url, parent = window.document.body) {
+              let script = window.document.createElement('script');
+              script.src = url;
+              parent.appendChild(script);
+            }
+            window.addScript = addScript;
+            addScript("${smartCaptchaUrl}", window.document.head);
+            addScript("${quizCaptchaUrl}", window.document.head);
+          }
+        `,
       },
     ];
   });
@@ -64,10 +63,12 @@ export default function(api: IApi) {
   api.addHTMLScripts(() => {
     return [
       {
-        content: `window.NVC_Opt = ${JSON.stringify(NVC_Option)}`,
-      },
-      {
-        src: guideUrl,
+        content: `
+        if(${include}.test(window.location.pathname)){
+          window.NVC_Opt = ${JSON.stringify(NVC_Option)};
+          window.addScript("${guideUrl}");
+        }
+        `,
       },
     ];
   });
