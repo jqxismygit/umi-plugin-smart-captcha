@@ -26,7 +26,7 @@ export default function(api: IApi) {
           guideUrl: joi.string(),
           smartCaptchaUrl: joi.string(),
           quizCaptchaUrl: joi.string(),
-          include: joi.string(),
+          include: joi.any(),
         });
       },
     },
@@ -37,7 +37,7 @@ export default function(api: IApi) {
     guideUrl = '//g.alicdn.com/sd/nvc/1.1.112/guide.js',
     smartCaptchaUrl = '//g.alicdn.com/sd/smartCaptcha/0.0.4/index.js',
     quizCaptchaUrl = '//g.alicdn.com/sd/quizCaptcha/0.0.1/index.js',
-    include = /^(\/user\/login)/,
+    include = /^(\/login)/,
   } = captcha;
 
   //乾坤的子项目不生效
