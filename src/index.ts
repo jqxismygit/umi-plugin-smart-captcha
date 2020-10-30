@@ -32,7 +32,7 @@ export default function(api: IApi) {
     },
   });
 
-  const { captcha = {} } = api.userConfig;
+  const { captcha = {}, qiankun } = api.userConfig;
   const {
     guideUrl = '//g.alicdn.com/sd/nvc/1.1.112/guide.js',
     smartCaptchaUrl = '//g.alicdn.com/sd/smartCaptcha/0.0.4/index.js',
@@ -40,38 +40,43 @@ export default function(api: IApi) {
     include = /^(\/user\/login)/,
   } = captcha;
 
-  api.addHTMLHeadScripts(() => {
-    return [
-      {
-        content: `
-          if(${include}.test(window.location.pathname)){
-            console.log(123);
-            function addScript(url, parent = window.document.body) {
-              let script = window.document.createElement('script');
-              script.src = url;
-              parent.appendChild(script);
+  //乾坤的子项目不生效
+  if (qiankun && qiankun.slave) {
+    api.logger.info('检测到该项目是qiankun的子项目，smart-captcha插件不生效');
+  } else {
+    api.addHTMLHeadScripts(() => {
+      return [
+        {
+          content: `
+            if(${include}.test(window.location.pathname)){
+              console.log(123);
+              function addScript(url, parent = window.document.body) {
+                let script = window.document.createElement('script');
+                script.src = url;
+                parent.appendChild(script);
+              }
+              window.addScript = addScript;
+              addScript("${smartCaptchaUrl}", window.document.head);
+              addScript("${quizCaptchaUrl}", window.document.head);
             }
-            window.addScript = addScript;
-            addScript("${smartCaptchaUrl}", window.document.head);
-            addScript("${quizCaptchaUrl}", window.document.head);
-          }
-        `,
-      },
-    ];
-  });
+          `,
+        },
+      ];
+    });
 
-  api.addHTMLScripts(() => {
-    return [
-      {
-        content: `
-        if(${include}.test(window.location.pathname)){
-          window.NVC_Opt = ${JSON.stringify(NVC_Option)};
-          window.addScript("${guideUrl}");
-        }
-        `,
-      },
-    ];
-  });
+    api.addHTMLScripts(() => {
+      return [
+        {
+          content: `
+          if(${include}.test(window.location.pathname)){
+            window.NVC_Opt = ${JSON.stringify(NVC_Option)};
+            window.addScript("${guideUrl}");
+          }
+          `,
+        },
+      ];
+    });
+  }
 }
 
 export { default as SmartCaptcha } from './smart-captcha';
