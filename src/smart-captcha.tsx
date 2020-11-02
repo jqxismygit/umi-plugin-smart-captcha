@@ -8,7 +8,7 @@ interface SmartCaptchaSuccessData {
   token?: string;
   sessionId?: string;
   sig?: string;
-  appkey?: string;
+  appKey?: string;
   scene?:string;
 }
 
@@ -56,7 +56,7 @@ const SmartCaptcha: React.FC<SmartCaptchaProps> = props => {
             token: NVC_Opt.token,
             sessionId: data.sessionId,
             sig: data.sig,
-            appkey: NVC_Option.appkey,
+            appKey: NVC_Option.appkey,
             scene: NVC_Option.scene
           });
         },
