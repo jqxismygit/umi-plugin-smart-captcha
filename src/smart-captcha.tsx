@@ -9,6 +9,7 @@ interface SmartCaptchaSuccessData {
   sessionId?: string;
   sig?: string;
   appkey?: string;
+  scene?:string;
 }
 
 interface SmartCaptchaProps {
@@ -56,6 +57,7 @@ const SmartCaptcha: React.FC<SmartCaptchaProps> = props => {
             sessionId: data.sessionId,
             sig: data.sig,
             appkey: NVC_Option.appkey,
+            scene: NVC_Option.scene
           });
         },
         fail: onFailed,
