@@ -53,9 +53,9 @@ export default function(api: IApi) {
       path: join(DIR_NAME, 'index.tsx'),
       content: `
         import React from 'react';
-        const loadScript = (url: string, window: any = window) => {
+        const loadScript = (url: string, win: any = window) => {
           return new Promise((resolve, reject) => {
-            let script = window.document.createElement('script');
+            let script = win.document.createElement('script');
             script.async = true;
             script.src = url;
             script.onload = function() {
@@ -65,7 +65,7 @@ export default function(api: IApi) {
               // eslint-disable-next-line
               reject();
             };
-            window.head.appendChild(script);
+            win.document.head.appendChild(script);
           });
         };
         export default (props) => {
