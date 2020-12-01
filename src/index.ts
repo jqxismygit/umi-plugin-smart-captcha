@@ -1,7 +1,7 @@
 import { IApi } from '@umijs/types';
 import { NVC_Option } from './config';
 import { utils } from 'umi';
-import { readFileSync } from 'fs';
+import { join } from 'path';
 interface CaptchaParam {
   guideUrl?: string;
   smartCaptchaUrl?: string;
