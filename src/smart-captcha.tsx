@@ -9,7 +9,7 @@ interface SmartCaptchaSuccessData {
   sessionId?: string;
   sig?: string;
   appKey?: string;
-  scene?:string;
+  scene?: string;
 }
 
 interface SmartCaptchaProps {
@@ -57,13 +57,16 @@ const SmartCaptcha: React.FC<SmartCaptchaProps> = props => {
             sessionId: data.sessionId,
             sig: data.sig,
             appKey: NVC_Option.appkey,
-            scene: NVC_Option.scene
+            scene: NVC_Option.scene,
           });
         },
-        fail: onFailed,
+        fail: function() {
+          ic?.reset();
+          onFailed?.();
+        },
       });
       ic.init();
-    }else{
+    } else {
       throw new Error('请安装umi-plugin-smart-captcha');
     }
   }, []);
