@@ -66,6 +66,7 @@ const SmartCaptcha: React.FC<SmartCaptchaProps> = props => {
         },
         error: function() {
           ic?.reset();
+          onFailed?.();
         },
       });
       ic.init();
