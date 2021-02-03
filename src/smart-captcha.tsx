@@ -22,7 +22,10 @@ interface SmartCaptchaProps {
   onFailed?: () => void;
 }
 
-const SmartCaptcha: React.FC<SmartCaptchaProps> = props => {
+const SmartCaptcha: React.ForwardRefRenderFunction<any, SmartCaptchaProps> = (
+  props,
+  ref,
+) => {
   const {
     className,
     style,
@@ -33,9 +36,16 @@ const SmartCaptcha: React.FC<SmartCaptchaProps> = props => {
     onFailed,
   } = props;
 
+  const ic = React.useRef<any>();
+  React.useImperativeHandle(ref, () => ({
+    reset: () => {
+      ic?.current.reset();
+    },
+  }));
+
   React.useEffect(() => {
     if (typeof smartCaptcha !== 'undefined') {
-      const ic = new smartCaptcha({
+      ic.current = new smartCaptcha({
         //声明智能验证需要渲染的目标元素ID。
         renderTo: `#${elementId}`,
         //智能验证组件的宽度。
@@ -61,15 +71,15 @@ const SmartCaptcha: React.FC<SmartCaptchaProps> = props => {
           });
         },
         fail: function() {
-          ic?.reset();
+          ic?.current?.reset();
           onFailed?.();
         },
         error: function() {
-          ic?.reset();
+          ic?.current?.reset();
           onFailed?.();
         },
       });
-      ic.init();
+      ic?.current?.init();
     } else {
       throw new Error('请安装umi-plugin-smart-captcha');
     }
@@ -77,4 +87,4 @@ const SmartCaptcha: React.FC<SmartCaptchaProps> = props => {
   return <div className={className} style={style} id={elementId} />;
 };
 
-export default SmartCaptcha;
+export default React.forwardRef(SmartCaptcha);

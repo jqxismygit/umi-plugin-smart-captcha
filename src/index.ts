@@ -73,12 +73,14 @@ export default function(api: IApi) {
           const [loaded, setLoaded] = React.useState(false);
           React.useEffect(()=>{
             async function init(){
-              await Promise.all([
-                loadScript("${smartCaptchaUrl}", ${windowContext}),
-                loadScript("${quizCaptchaUrl}", ${windowContext}),
-              ]);
-              ${windowContext}.NVC_Opt = ${JSON.stringify(NVC_Option)};
-              await loadScript("${guideUrl}", ${windowContext});
+              if(!${windowContext}.NVC_Opt){
+                await Promise.all([
+                  loadScript("${smartCaptchaUrl}", ${windowContext}),
+                  loadScript("${quizCaptchaUrl}", ${windowContext}),
+                ]);
+                ${windowContext}.NVC_Opt = ${JSON.stringify(NVC_Option)};
+                await loadScript("${guideUrl}", ${windowContext});
+              }
               setLoaded(true);
             }
             init();
