@@ -84,7 +84,16 @@ export default function(api: IApi) {
               setLoaded(true);
             }
             init();
-          }, [])
+          }, []);
+          //这里其实是有耦合的，考虑插件分割
+          React.useEffect(()=>{
+            setTimeout(()=>{
+              var loading = window.document.querySelector('#lins-module-loading');
+              if(!!loading){
+                window.document.body.removeChild(loading);
+              }      
+            }, 500);
+          }, []);
           return (
             <>
               {loaded && children}
